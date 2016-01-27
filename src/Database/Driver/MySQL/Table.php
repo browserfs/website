@@ -11,7 +11,7 @@
 		}
 
 		public function select( $fields ) {
-			return null;
+			return new Select( $fields, $this );
 		}
 
 		public function update( $fields ) {

@@ -6,7 +6,7 @@
 
 		// A list with built in factories for services. A developer can register classes for
 		// services here, via the static method registerService();
-		protected static $factories = [];
+		public static $factories = [];
 
 		// The name of the service
 		protected $name       = null;
@@ -175,7 +175,9 @@
 		 * @return string[]
 		 */
 		public final function getConfigPropertyNames() {
+		
 			return array_keys( $this->properties );
+		
 		}
 
 		/**
@@ -265,6 +267,7 @@
 
 		public static function registerService( $serviceName, $serviceType, $fullServiceNamespacedClass ) {
 
+
 			if ( !is_string( $serviceName ) || $serviceName === '' ) {
 				throw new \browserfs\Exception( 'Invalid argument $serviceName: Expected non-empty string' );
 			}
@@ -296,6 +299,7 @@
 				self::$factories[ $serviceName ][ $serviceType ] = $fullServiceNamespacedClass;
 			
 			}
+
 		}
 
 	}

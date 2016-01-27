@@ -1,0 +1,20 @@
+type TSelectFieldsByName = {
+	[ key: string ] : boolean;
+}
+
+type TSelectFieldsByEnumeration {
+	[ index: int ] : string;
+}
+
+type VSelectFieldsByName {
+	
+	@instanceof TSelectFieldsByName;
+
+	@index(
+		
+	);
+}
+
+type VSelectFieldsByEnumeration {
+	
+}

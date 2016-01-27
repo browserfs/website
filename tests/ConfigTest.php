@@ -25,6 +25,7 @@
 
 		}
 
+		/*
 		public function testIfConfigurationHasLoadedItsServices() {
 
 			$this->assertEquals( true, $this->config->serviceLoaded('staging' ) );
@@ -75,5 +76,6 @@
 				->run();
 
 		}
+		*/
 
 	}

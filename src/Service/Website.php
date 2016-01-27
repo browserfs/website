@@ -40,7 +40,7 @@
 
 				$htdocsExpanded = @realpath( $htdocsPath );
 
-				if ( $htdocsExpanded === FALSE ) {
+				if ( $htdocsExpanded === false || $htdocsExpanded === null ) {
 					throw new \browserfs\Exception('the path "' . $htdocsPath . '" does not exist ( [website]/htdocs )!' );
 				}
 

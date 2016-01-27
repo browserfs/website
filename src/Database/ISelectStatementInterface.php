@@ -10,7 +10,11 @@
 
 		public function fields();
 
-		public function where();
+		public function isAllFields();
+		public function isSomeFields();
+		public function isExceptFields();
+
+		public function where( $filterCondition );
 
 		public function run();
 
