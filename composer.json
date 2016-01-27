@@ -16,7 +16,8 @@
 
     "require": {
     	"php": ">=5.4",
-        "browserfs/string": "*"
+        "browserfs/string": "*",
+        "browserfs/runtime": "*"
     },
 
     "autoload": {

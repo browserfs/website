@@ -60,8 +60,10 @@ foreach ( $dependencies = [
 		'string',
 	] as $submodule ) {
 
-	if ( is_dir( __DIR__ . '/../' . $submodule ) && is_dir( __DIR__ . '/../src' ) ) {
-		autoload_init( 'browserfs\\' . $submodule, __DIR__ . '/../' . $submodule . '/src');
+	if ( is_dir( __DIR__ . '/../' . $submodule ) && file_exists( __DIR__ . '/../' . $submodule . '/bootstrap.php' ) ) {
+		
+		require_once __DIR__ . '/../' . $submodule . '/bootstrap.php';
+
 	}
 
 }
