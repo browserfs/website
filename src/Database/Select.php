@@ -2,12 +2,18 @@
 	
 	namespace browserfs\website\Database;
 
-	abstract class Select implements ISelectStatementInterface {
+	abstract class Select implements Select\ISelect {
 
 		protected $fields = null;
 		protected $table  = null;
 
-		public function __construct( $fields, \browserfs\website\Database\Table $table ) {
+		public function __construct( 
+		
+			$fields,
+
+			\browserfs\website\Database\Table $table
+		
+		) {
 
 			if ( null !== $fields ) {
 				$this->fields = new \browserfs\website\Database\FieldsList( $fields );
@@ -20,18 +26,32 @@
 			$this->table = $table;
 		}
 
-		public function table() {
+		public function getTable() {
 			return $this->table;
 		}
 
-		public function db() {
-			return $this->table->db();
+		public function getSelect() {
+			return $this;
 		}
 
-		public function fields() {
+		public function getWhere() {
+			return null;
+		}
+
+		public function getSkip() {
+			return null;
+		}
+
+		public function getLimit() {
+			return null;
+		}
+
+		public function value() {
+		
 			return $this->fields === null
 				? null
 				: $this->fields->fields();
+		
 		}
 
 		public function isAllFields() {
@@ -47,6 +67,10 @@
 		}
 
 		abstract public function where( $filterCondition );
+
+		abstract public function limit( $many );
+
+		abstract public function skip( $many );
 
 		abstract public function run();
 

@@ -10,7 +10,7 @@
 		
 		}
 
-		public function select( $fields ) {
+		public function select( $fields = null ) {
 			return new Select( $fields, $this );
 		}
 

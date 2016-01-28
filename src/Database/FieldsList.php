@@ -32,7 +32,7 @@
 
 				$isHash = false;
 
-				for ( $fields as $k => $v ) {
+				foreach ( $fields as $k => $v ) {
 
 					if ( !is_int( $k ) ) {
 						$isHash = true;
@@ -92,6 +92,7 @@
 					}
 				}
 			}
+
 		}
 
 		/**

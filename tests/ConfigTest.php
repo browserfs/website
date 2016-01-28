@@ -25,7 +25,6 @@
 
 		}
 
-		/*
 		public function testIfConfigurationHasLoadedItsServices() {
 
 			$this->assertEquals( true, $this->config->serviceLoaded('staging' ) );
@@ -62,20 +61,75 @@
 
 			$db = $this->config->getService('database');
 
-			$results = $db
+			$db
 				->primary          // Database source name is accessed via the getter
-				->table( 'test' )
-				->select( null )
-				->where( [ 
-				   		'id' => [ 
-				   			'$gt' => 0 
-				   		] 
-				   	])
-				->skip( 2 )
-				->limit( 3 )
+				->test             // Table name is accessed via the getter
+				->select()
+				->run();
+
+
+			$db
+				->primary
+				->test
+				->select()
+				->skip(1)
+				->run();
+
+
+			$db
+				->primary
+				->test
+				->select([ 'id', 'name' ])
+				->limit(1)
+				->run();
+
+			$db
+				->primary
+				->test
+				->select()
+				->skip(1)
+				->limit(1)
+				->run();
+
+			$db
+				->primary
+				->test
+				->select()
+				->where([
+					'id' => [
+						'$ne' => null,
+						'$gt' => 0
+					]
+				])
+				->run();
+
+			$db
+				->primary
+				->test
+				->select()
+				->where([
+					'id' => [
+						'$ne' => null,
+						'$gt' => 0
+					]
+				])
+				->skip(1)
+				->run();
+
+			$db
+				->primary
+				->test
+				->select()
+				->where([
+					'id' => [
+						'$ne' => null,
+						'$gt' => 0
+					]
+				])
+				->skip(1)
+				->limit(1)
 				->run();
 
 		}
-		*/
 
 	}

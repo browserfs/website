@@ -182,5 +182,3 @@
 	}
 
 \browserfs\website\Database::registerDriver( 'mysql', '\\' . __NAMESPACE__ . '\\Database\Driver\MySQL' );
-\browserfs\website\Database::registerDriver( 'mongo', '\\' . __NAMESPACE__ . '\\Database\Driver\Mongo' );
-\browserfs\website\Database::registerDriver( 'mongodb', '\\' . __NAMESPACE__ . '\\Database\Driver\Mongo' );

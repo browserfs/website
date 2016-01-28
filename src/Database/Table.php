@@ -17,12 +17,12 @@
 				throw new \browserfs\Exception('Invalid argument $tableName: Expected a string representing a valid table name!' );
 			}
 
-			$this->name = $name;
+			$this->name = $tableName;
 			$this->db   = $db;
 
 		}
 
-		abstract public function select( $what );
+		abstract public function select( $what = null );
 
 		abstract public function update( $fields );
 
@@ -38,7 +38,7 @@
 			return $this->db;
 		}
 
-		protected static isTableName( $str ) {
+		protected static function isTableName( $str ) {
 			return is_string( $str ) && preg_match( '/^[a-zA-Z0-9_]([a-zA-Z0-9_]+)$/', $str );
 		}
 

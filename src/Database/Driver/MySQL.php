@@ -14,7 +14,15 @@
 
 		public function table( $tableName ) {
 
-			return null;
+			if ( is_string( $tableName ) && $tableName != '' ) {
+
+				return new \browserfs\website\Database\Driver\MySQL\Table( $this, $tableName );
+
+			} else {
+
+				throw new \brwoserfs\Exception('Invalid argument $tableName: non-empty string expected!' );
+
+			}
 
 		}
 
@@ -27,6 +35,14 @@
 		public function getNativeDriver() {
 
 			return null;
+
+		}
+
+		public function __get( $tableName ) {
+
+			if ( is_string( $tableName ) && $tableName != '' ) {
+				return $this->table( $tableName );
+			}
 
 		}
 
