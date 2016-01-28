@@ -61,6 +61,28 @@
 
 			$db = $this->config->getService('database');
 
+			$queries = [];
+
+			try {
+				$db->primary->connect();
+			} catch ( \Exception $e ) {
+				echo "\n\nDATABASE SERVICE SKIPPED: The testing environment does not provide required database support";
+				$this->markTestSkipped( 'The testing environment does not provide require database support' );
+				return;
+			}
+
+			$db->primary->on( 'query', function( \browserfs\Event $e ) use ( &$queries ) {
+				
+				$tableName = $e->getArg(0);
+				$query = $e->getArg(1);
+				
+				$queries[] = [
+					'table' => $tableName,
+					'query' => $query
+				];
+			
+			} );
+
 			echo "\n\nshould return all: \n";
 
 			$db
@@ -194,6 +216,10 @@
 				->each( function( $row ) {
 					echo json_encode( $row ), "\n";
 				});
+
+			echo "\n\n===\n\nexecuted queries: ", json_encode( $queries, JSON_PRETTY_PRINT );
+
+			$this->assertEquals( 8 , count( $queries ) );
 
 		}
 

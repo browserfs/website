@@ -22,32 +22,30 @@
 	 * Each driver class, should register itself, during the class require phase,
 	 * by using the following method call:
 	 *
-	 * ```php
 	 *     \browserfs\website\Database::registerDriver( 
 	 *         "driver-scheme-name", 
 	 *         "full-namespace-upto-driver-class-notation"
 	 *     );
-	 * ```
 	 *
 	 * eg: If you want to implement a mssql driver, you should use the command:
 	 *
-	 * ```php
 	 *     \browserfs\website\Database::registerDriver( "mssql", "\\foovendor\\foonamespace\\MsSQL" );
-	 * ```
 	 *
 	 * Each operation executed on a driver table, should fire an event on a table:
 	 *
-	 * ```php
 	 *    "query" ( string $executedQuery ),
-	 * ```
 	 *
 	 * which should bubble up to it's database object, who would fire by itself:
 	 *
-	 * ```php
 	 *    "query" ( string $tableName, string $query )
-	 * ```
 	 *
 	 * This is to ensure audit and benchmark is available on that driver type.
+	 *
+	 * Also, the driver should be able to instantiate it's tables on a sigleton patter,
+	 * this allowing us to register events on a driver collection or table:
+	 *
+	 *     $driver->persons->on( 'query', function( $queryString ) { ... } );
+	 *
 	 */
 
 	abstract class Database extends \browserfs\EventEmitter {

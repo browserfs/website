@@ -51,7 +51,7 @@
 		}
 
 		protected static function isTableName( $str ) {
-			return is_string( $str ) && preg_match( '/^[a-zA-Z0-9_]([a-zA-Z0-9_]+)$/', $str );
+			return is_string( $str ) && preg_match( '/^[a-zA-Z0-9_]([a-zA-Z0-9_]+)((\\.[a-zA-Z0-9_]([a-zA-Z0-9_]+))+)?$/', $str );
 		}
 
 	}

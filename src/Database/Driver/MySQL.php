@@ -6,6 +6,10 @@
 
 		protected $driver = null;
 
+		// Singleton tables patter. This is to allow attaching events
+		// on the tables.
+		protected $tables = [];
+
 		protected function __construct( $config, $dsn ) {
 
 			// THIS SHOULD BE THE FIRST LINE OF CODE FOR A DATABASE DRIVER IMPLEMENTATION
@@ -18,7 +22,16 @@
 
 			if ( $this->isTableName( $tableName ) ) {
 
-				return new \browserfs\website\Database\Driver\MySQL\Table( $this, $tableName );
+				$normalizedTableName = $this->normalizeTableName( $tableName );
+
+				if ( isset( $this->tables[ $normalizedTableName ] ) ) {
+					return $this->tables[ $normalizedTableName ];
+				}
+
+				return (
+					$this->tables[ $normalizedTableName ] 
+						= new \browserfs\website\Database\Driver\MySQL\Table( $this, $normalizedTableName ) 
+				);
 
 			} else {
 
@@ -184,6 +197,31 @@
 			}
 
 			$this->driver = $result;
+
+		}
+
+		private function normalizeTableName( $tableName ) {
+
+			$tableNameParts = explode( '.', $tableName );
+
+			if ( count( $tableNameParts ) == 1 ) {
+
+				return strtolower( $this->database ) . '.' . $tableName;
+			
+			} else {
+			
+				if ( count( $tableNameParts ) == 2 ) {
+					// table is in format [database name].[table name]
+					// make database to lower case...
+
+					$tableNameParts[0] = strtolower( $tableNameParts[0] );
+					
+					return $tableNameParts[0] . '.' . $tableNameParts[1];
+				
+				} else {
+					throw new \browserfs\Exception('Un-normalizable table name: ' . strtlower( $tableName ) );
+				}
+			}
 
 		}
 
