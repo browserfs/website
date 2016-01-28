@@ -10,7 +10,7 @@ services:
 
 before_install:
     - mysql -e 'create database IF NOT EXISTS test;' -uroot
-    - mysql -u root test < ./tests/db-schema-test.sql
+    - mysql -user=root test < ./tests/db-schema-test.sql
 
 before_script:
     - composer self-update
