@@ -58,7 +58,6 @@ if ( is_dir( __DIR__ . '/vendor') && file_exists( __DIR__ . '/vendor/autoload.ph
 // by you, they are located within a level up folder of your project
 foreach ( $dependencies = [
 		'string',
-		'base'
 	] as $submodule ) {
 
 	if ( is_dir( __DIR__ . '/../' . $submodule ) && file_exists( __DIR__ . '/../' . $submodule . '/bootstrap.php' ) ) {
