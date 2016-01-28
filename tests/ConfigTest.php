@@ -66,7 +66,7 @@
 			try {
 				$db->primary->connect();
 			} catch ( \Exception $e ) {
-				echo "\n\nDATABASE SERVICE SKIPPED: The testing environment does not provide required database support";
+				echo "\n\nDATABASE SERVICE SKIPPED: The testing environment does not provide required database support\n\n" . $e->getMessage();
 				$this->markTestSkipped( 'The testing environment does not provide require database support' );
 				return;
 			}
