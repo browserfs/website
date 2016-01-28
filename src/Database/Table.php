@@ -2,7 +2,7 @@
 	
 	namespace browserfs\website\Database;
 
-	abstract class Table implements ITableInterface {
+	abstract class Table extends \browserfs\EventEmitter implements ITableInterface  {
 
 		protected $name = null;
 		protected $db   = null;
@@ -19,6 +19,18 @@
 
 			$this->name = $tableName;
 			$this->db   = $db;
+
+			$self = $this;
+
+			// Audit feature: Fire an event call "query" on the database!
+			$this->on( 'query', function( \browserfs\Event $e ) use ( &$self ) {
+				
+				$theQuery = $e->getArg(0);
+				$myTableName = $self->name();
+
+				// bubble-up
+				$self->db()->fire( 'query', $myTableName, $theQuery );
+			});
 
 		}
 

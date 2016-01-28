@@ -5,18 +5,20 @@
 	class Run extends \browserfs\website\Database\Select\Run {
 		
 		public function __construct( 
+
 			\browserfs\website\Database\Driver\MySQL\Table        $table, 
 			\browserfs\website\Database\Driver\MySQL\Select       $select = null, 
 			\browserfs\website\Database\Driver\MySQL\Select\Where $where  = null,
 			\browserfs\website\Database\Driver\MySQL\Select\Skip  $skip   = null,
 			\browserfs\website\Database\Driver\MySQL\Select\Limit $limit  = null
+
 		) {
 
 			parent::__construct( $table, $select, $where, $skip, $limit );
 			
 		}
 
-		protected function exec() {
+		public function exec() {
 
 			// BUILD QUERY
 
@@ -28,7 +30,7 @@
 				$parts[] = '*';
 			}
 
-			$parts[] = 'FROM ' . $this->table->name();
+			$parts[] = 'FROM ' . $this->table->db()->escapeIdentifier( $this->table->name() );
 
 			if ( $this->where !== null ) {
 				$parts[] = 'WHERE ' . $this->where->toString();
@@ -44,7 +46,7 @@
 
 				} else {
 
-					$parts[] = 'LIMIT ' . $this->skip->value() . ',1000000';
+					$parts[] = 'LIMIT ' . $this->skip->value() . ',1000000000';
 
 				}
 
@@ -58,11 +60,35 @@
 
 			}
 
-			$query = implode( ' ', $parts );
+			$query = implode( ' ', $parts ) . ';';
 
-			echo "DEBUG: ", $query, "\n";
+			// FIRES A NOTIFIER TO THE TABLE
+			$this->table->fire( 'query', $query );
 
-			return $query;
+			// run query
+
+			$this->table->db()->connect();
+
+			$results = [];
+
+			$stmt = $this->table->db()->getNativeDriver()->query( $query );
+
+			if ( $this->select !== null && $this->select->isExceptFields() ) {
+
+				while ( $row = $stmt->fetch( \PDO::FETCH_ASSOC ) ) {
+					$this->select->removeFields( $row );
+					$results[] = $row;
+				}
+
+			} else {
+
+				while ( $row = $stmt->fetch( \PDO::FETCH_ASSOC ) ) {
+					$results[] = $row;
+				}
+
+			}
+
+			return new \browserfs\Collection( $results );
 
 		}
 

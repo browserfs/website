@@ -30,11 +30,13 @@
 		}
 
 		public function run() {
-			return new \browserfs\website\Database\Driver\MySQL\Select\Run(
+			$result = new \browserfs\website\Database\Driver\MySQL\Select\Run(
 				$this->table,
 				$this->select,
 				$this
 			);
+
+			return $result->exec();
 		}
 
 		public function toString() {
@@ -52,7 +54,9 @@
 		protected function encodeExpression( $expression ) {
 
 			if ( !is_array( $expression ) ) {
+				
 				throw new \browserfs\Exception( json_encode( $expression ) . ' is not a expression' );
+			
 			}
 
 			$tokens = [];
@@ -66,19 +70,27 @@
 
 						// only $not, $and, and $or operators can be located into the root.
 						if ( !in_array( $key, [ '$or', '$and', '$not' ] ) ) {
+						
 							throw new \browserfs\Exception( 'Invalid expression: The ' . $key . ' operator cannot be located in the root of an expression' );
+						
 						}
 						
 						if ( $key == '$or' || $key == '$and' ) {
+						
 							$tokens[] = $this->encodeLogicalExpression( $value, $key == '$or' ? 'OR' : 'AND' );
+						
 						} else {
+						
 							$tokens[] = $this->encodeNegateExpression( $value );
+						
 						}
 
 						break;
 
 					default:
+						
 						$tokens[] = $this->encodePropertyValue( $value, $key );
+						
 						break;
 
 				}
@@ -113,26 +125,17 @@
 
 		protected function encodePropertyValue( $value, $key ) {
 
-			if ( !is_string( $key ) || !strlen( $key ) || strpos( $key, '.' ) !== false ) {
-				throw new \browserfs\Exception('Invalid key name: ' . $key );
-			}
+			if ( $this->table->db()->isEscapable( $value ) ) {
 
-			if ( $value === null ) {
-				return '`' . $key . '` IS NULL';
-			} else
-			if ( is_int( $value ) || is_float( $value ) ) {
-				return '`' . $key . '` = ' . (string)$value;
-			} else
-			if ( is_string( $value ) ) {
-				return '`' . $key . '` = "' . addslashes( $value ) . '"';
-			} else
-			if ( is_bool( $value ) ) {
-				return '`' . $key . '` = ' . (int)$value;
+				return $this->table->db()->escapeIdentifier( $key ) . ( $value === null ? ' IS NULL' : ' = ' . $this->table->db()->escape( $value ) );
+			
 			} else
 			{
 
 				if ( !is_array( $value ) || !count( $value ) ) {
+
 					throw new \browserfs\Exception( 'Invalid value for key ' . $key . ' provided' );
+
 				}
 
 				$tokens = [];
@@ -141,11 +144,15 @@
 				foreach ( array_keys( $value ) as $valueKey ) {
 
 					if ( substr( $valueKey, 0, 1 ) != '$' ) {
+
 						throw new \browserfs\Exception( 'Invalid value for key ' . $key . ' provided: Only operators allowed in the root object!' );
+
 					}
 
 					if ( in_array( $valueKey, array( '$and', '$or', '$not' ) ) ) {
+
 						throw new \browserfs\Exception( 'Logical operators not supported in the root object of property "' . $key . '"' );
+
 					}
 
 					switch ( $valueKey ) {
@@ -190,23 +197,16 @@
 				throw new \browserfs\Exception('$in operator expects a dataset of primitive values!' );
 			}
 
-			$out = '`' . $keyName . '` IN (';
+			$out = $this->table->db()->escapeIdentifier( $keyName ) . ' IN (';
 
 			$sub = [];
 
 			foreach ( $dataSet as $value ) {
 
-				if ( $value === null ) {
-					$sub[] = 'NULL';
-				} else
-				if ( is_string( $value ) ) {
-					$sub[] = '"' . addslashes( $value ) . '"';
-				} else
-				if ( is_int( $value ) || is_float( $value ) ) {
-					$sub[] = (string)$value;
-				} else
-				if ( is_bool( $value ) ) {
-					$sub[] = (int)$value;
+				if ( $this->table->db()->isEscapable( $value ) ) {
+				
+					$sub[] = $this->table->db()->escape( $value );
+				
 				} else
 				{
 					throw new \browserfs\Exception('Invalid data type inside $in operator!' );
@@ -218,11 +218,13 @@
 
 			$out .= ')';
 
+			return $out;
+
 		}
 
 		protected function encodeComparisionOperator( $keyName, $value, $operator ) {
 
-			$result = '`' . $keyName . '` ';
+			$result = $this->table->db()->escapeIdentifier( $keyName ) . ' ';
 
 			switch ( $operator ) {
 				case '$gt':
@@ -241,7 +243,6 @@
 					$result .= ( $value === null ? 'IS ' : '= ' );
 					break;
 				case '$ne':
-				case '$neq':
 					$result .= ( $value === null ? 'IS NOT ' : '<> ' );
 					break;
 				default:
@@ -249,19 +250,14 @@
 					break;
 			}
 
-			if ( $value === NULL ) {
-				$result .= 'NULL';
-			} else
-			if ( is_string( $value ) ) {
-				$result .= '"' . addslashes( $value ) . '"';
-			} else
-			if ( is_int( $value ) || is_float( $value ) ) {
-				$result .= (string)$value;
-			} else
-			if ( is_bool( $value ) ) {
-				$result .= (int)$value;
+			if ( $this->table->db()->isEscapable( $value ) ) {
+			
+				$result .= $this->table->db()->escape( $value );
+			
 			} else {
+			
 				throw new \browserfs\Exception( 'Invalid value type for operator ' . $operator );
+			
 			}
 
 			return $result;

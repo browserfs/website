@@ -75,21 +75,22 @@
 								throw new \browserfs\Exception( 'Invalid argument $fields: Expected @all = true | @all = false');
 							}
 
-							$this->fields[] = $fieldName;
-
 						}
 
-						if ( $policy === null ) {
-							$this->policy = self::FIELDS_INCLUDE_ALL;
-						} else
-						if ( $policy === false ) {
-							$this->policy = self::FIELDS_EXCLUDE_SOME;
-						} else
-						{
-							$this->policy = self::FIELDS_INCLUDE_SOME;
-						}
+						$this->fields[] = $fieldName;
 
 					}
+
+					if ( $policy === null ) {
+						$this->policy = self::FIELDS_INCLUDE_ALL;
+					} else
+					if ( $policy === false ) {
+						$this->policy = self::FIELDS_EXCLUDE_SOME;
+					} else
+					{
+						$this->policy = self::FIELDS_INCLUDE_SOME;
+					}
+
 				}
 			}
 

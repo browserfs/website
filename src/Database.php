@@ -2,7 +2,55 @@
 	
 	namespace browserfs\website;
 
-	abstract class Database {
+	/**
+	 * The database class is an abstract class representing a driver implementation
+	 * of a specific database protocol ( e.g. "mysql", "mongodb", "firebase", etc. );
+	 *
+	 * Database drivers should extend this class, and do their best effort to implement the
+	 * following features:
+	 *
+	 * { get } [ index: string ]: \browserfs\website\Database\Table
+	 *    -> register a getter on each table on the database.
+	 *
+	 * Each table obtained via the ->table() method or via a the driver database getter,
+	 * should support the basic 4 CRUD operations on a table:
+	 *     -> select
+	 *     -> update
+	 *     -> delete
+	 *     -> insert
+	 *
+	 * Each driver class, should register itself, during the class require phase,
+	 * by using the following method call:
+	 *
+	 * ```php
+	 *     \browserfs\website\Database::registerDriver( 
+	 *         "driver-scheme-name", 
+	 *         "full-namespace-upto-driver-class-notation"
+	 *     );
+	 * ```
+	 *
+	 * eg: If you want to implement a mssql driver, you should use the command:
+	 *
+	 * ```php
+	 *     \browserfs\website\Database::registerDriver( "mssql", "\\foovendor\\foonamespace\\MsSQL" );
+	 * ```
+	 *
+	 * Each operation executed on a driver table, should fire an event on a table:
+	 *
+	 * ```php
+	 *    "query" ( string $executedQuery ),
+	 * ```
+	 *
+	 * which should bubble up to it's database object, who would fire by itself:
+	 *
+	 * ```php
+	 *    "query" ( string $tableName, string $query )
+	 * ```
+	 *
+	 * This is to ensure audit and benchmark is available on that driver type.
+	 */
+
+	abstract class Database extends \browserfs\EventEmitter {
 
 		protected $host     = null;
 		protected $port     = null;
@@ -18,8 +66,7 @@
 		// dsn stands for Data Source Name.
 		protected $dsn      = null;
 
-		private static $factories = [
-		];
+		private static $factories = [];
 
 		protected function __construct( $config, $databaseSourceName ) {
 
@@ -178,6 +225,19 @@
 				: false;
 
 		}
+
+		/**
+		 * Returns TRUE if a connection to the database is allready made, or FALSE otherwise.
+		 * @return boolean
+		 */
+		abstract public function isConnected();
+
+		/**
+		 * Returns TRUE if a connection to the database is allready made, or
+		 * tries to connect to the database, or FALSE otherwise.
+		 * @return boolean
+		 */
+		abstract public function connect();
 
 	}
 

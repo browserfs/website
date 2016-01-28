@@ -18,13 +18,15 @@
 
 		public function run() {
 			
-			return new \browserfs\website\Database\Driver\MySQL\Select\Run(
+			$result = new \browserfs\website\Database\Driver\MySQL\Select\Run(
 				$this->table,
 				$this->select,
 				$this->where,
 				$this->skip,
 				$this
 			);
+
+			return $result->exec();
 
 		}
 

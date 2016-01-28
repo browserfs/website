@@ -64,10 +64,8 @@
 
 			}
 
-			$this->exec();
-		
 		}
 
-		abstract protected function exec();
+		abstract public function exec();
 
 	}

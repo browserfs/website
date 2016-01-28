@@ -53,13 +53,15 @@
 
 		public function run() {
 			
-			return new \browserfs\website\Database\Driver\MySQL\Select\Run(
+			$result = new \browserfs\website\Database\Driver\MySQL\Select\Run(
 				$this->table,
 				$this,
 				null,
 				null,
 				null
 			);
+
+			return $result->exec();
 
 		}
 
@@ -72,7 +74,14 @@
 			} else
 			if ( $this->isSomeFields() ) {
 			
-				return '`' . implode( '`, `', $this->value() ) . '`';
+				$result = [];
+				$fields = $this->value();
+
+				foreach ( $fields as $fieldName ) {
+					$result[] = $this->table->db()->escapeIdentifier( $fieldName );
+				}
+
+				return implode( ', ', $result );
 			
 			} else
 			if ( $this->isExceptFields() ) {
@@ -84,6 +93,22 @@
 				throw new \browserfs\Exception('Invalid query fields list (bug)?');
 			
 			}
+
+		}
+
+		public function removeFields( &$row ) {
+
+			$fields = $this->value();
+
+			if ( is_array( $fields ) && is_array( $row ) ) {
+				foreach ( $fields as $fieldName ) {
+					if ( isset( $row[ $fieldName ] ) ) {
+						unset( $row[ $fieldName ] );
+					}
+				}
+			}
+
+			return $row;
 
 		}
 

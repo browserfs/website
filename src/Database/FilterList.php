@@ -112,7 +112,7 @@
 
 		protected function testOperatorIN( $operatorValue ) {
 			
-			if ( !$this->isIndexedArary( $operatorValue ) || !count( $operatorValue ) ) {
+			if ( !$this->isIndexedArray( $operatorValue ) || !count( $operatorValue ) ) {
 				throw new \browserfs\Exception('Invalid value supplied for $in operator: Expected indexed array with primitive values!' );
 			}
 			

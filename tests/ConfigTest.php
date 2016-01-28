@@ -61,35 +61,95 @@
 
 			$db = $this->config->getService('database');
 
+			echo "\n\nshould return all: \n";
+
 			$db
 				->primary          // Database source name is accessed via the getter
 				->test             // Table name is accessed via the getter
 				->select()
-				->run();
+				->run()
+				->each( function( $row ) {
+					echo json_encode( $row ), "\n";
+				});
 
-
-			$db
-				->primary
-				->test
-				->select()
-				->skip(1)
-				->run();
-
-
-			$db
-				->primary
-				->test
-				->select([ 'id', 'name' ])
-				->limit(1)
-				->run();
+			echo "\n\nshould return all excepting first: \n";
 
 			$db
 				->primary
 				->test
 				->select()
 				->skip(1)
+				->run()
+				->each( function( $row ) {
+					echo json_encode( $row ), "\n";
+				});
+
+			echo "\n\nshould return first ( manually specifying fields ): \n";
+
+			$db
+				->primary
+				->test
+				->select([ 'name' ])
 				->limit(1)
-				->run();
+				->run()
+				->each( function( $row ) {
+					echo json_encode( $row ), "\n";
+				});
+
+			echo "\n\nshould return the second person: \n";
+
+			$db
+				->primary
+				->test
+				->select()
+				->skip(1)
+				->limit(1)
+				->run()
+				->each( function( $row ) {
+					echo json_encode( $row ), "\n";
+				});
+
+			echo "\n\nshould return names > 'clarissa': \n";
+
+			$db
+				->primary
+				->test
+				->select([
+					'id' => FALSE
+				])
+				->where([
+					'id' => [
+						'$ne' => null,
+						'$gt' => 0
+					],
+					'name' => [
+						'$gt' => 'clarissa'
+					]
+				])
+				->run()
+				->each( function( $row ) {
+					echo json_encode( $row ), "\n";
+				});
+
+			echo "\n\nshould return id > 4:\n";
+
+			$db
+				->primary
+				->test
+				->select()
+				->where([
+					'id' => [
+						'$ne' => null,
+						'$gt' => 3
+					]
+				])
+				->skip(1)
+				->run()
+				->each( function( $row ) {
+					echo json_encode( $row ), "\n";
+				});
+
+			echo "\n\nshould return only bill or jack: \n";
 
 			$db
 				->primary
@@ -100,39 +160,40 @@
 						'$ne' => null,
 						'$gt' => 0
 					],
-					'foo' => 2
-				])
-				->run();
-
-			$db
-				->primary
-				->test
-				->select()
-				->where([
-					'id' => [
-						'$ne' => null,
-						'$gt' => 0
+					'name' => [
+						'$in' => [ 'bill', 'jack' ]
 					]
 				])
 				->skip(1)
-				->run();
+				->limit(1)
+				->run()
+				->each( function( $row ) {
+					echo json_encode( $row ), "\n";
+				});
+
+			echo "\n\nshould not return id: \n";
 
 			$db
 				->primary
 				->test
-				->select()
+				->select([
+					'id' => false
+				])
 				->where([
 					'id' => [
 						'$ne' => null,
 						'$gt' => 0
 					],
-					'color' => [
-						'$in' => [ 'red', 'green', 'blue' ]
+					'name' => [
+						'$in' => [ 'bill', 'jack' ]
 					]
 				])
 				->skip(1)
 				->limit(1)
-				->run();
+				->run()
+				->each( function( $row ) {
+					echo json_encode( $row ), "\n";
+				});
 
 		}
 
