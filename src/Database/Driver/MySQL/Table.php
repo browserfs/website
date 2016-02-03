@@ -23,7 +23,7 @@
 		}
 
 		public function insert( $fields ) {
-			return null;
+			return new Insert( $fields, $this );
 		}
 
 	}

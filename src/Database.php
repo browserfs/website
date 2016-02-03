@@ -66,6 +66,12 @@
 
 		private static $factories = [];
 
+		/**
+		 * Creates a new database. Drivers should extend this class.
+		 *
+		 * @param array $config [ "host"?: <string>, "port"?: <int>, "user"?: <string>, "pass"?: <string>, "path"?: <string>, "query"?: <string>  ]
+		 * @param string $databaseSourceName - a unique identifier for this database connection
+		 */
 		protected function __construct( $config, $databaseSourceName ) {
 
 			if ( !is_string( $databaseSourceName ) || strlen( $databaseSourceName ) == 0 ) {
@@ -116,7 +122,8 @@
 
 		/**
 		 * Returns a Database driver specific table implementation.
-		 * @param  $from: string
+		 *
+		 * @param  string $from
 		 * @return \browserfs\Database\Table
 		 */
 
@@ -124,7 +131,8 @@
 
 		/**
 		 * Escapes a value according to specific database engine implementation
-		 * @param $mixed: any
+		 *
+		 * @param  any $mixed
 		 * @return any
 		 */
 		abstract public function escape( $mixed );
@@ -138,7 +146,13 @@
 		abstract public function getNativeDriver();
 
 		/**
-		 * Static constructor.
+		 * Static constructor. Creates a database driver based on a specific implementation,
+		 * and a specific configuration. Use this for the class constructor, do not use the
+		 * new operator.
+		 *
+		 * @param string $databaseType - the database type ( e.g.: "mysql", "mongodb", etc. )
+		 * @param array  $databaseConfig - the connection configuration settings ( see __construct )
+		 * @param string $databaseSourceName - the name of the connection ( see __construct )
 		 */
 		public static function factory( $databaseType, $databaseConfig, $databaseSourceName ) {
 
@@ -188,10 +202,11 @@
 
 		/**
 		 * Registers a database driver-specific implementation provider driver.
-		 * @param $databaseSchemeName: string ( e.g: "mysql", "mongo", "firebase", etc. )
-		 * @param $implementingClassWithFullNamespace: string ( e.g: "\vendor\namespace\MySQLDriver" )
+		 *
+		 * @param string $databaseSchemeName - ( e.g: "mysql", "mongo", "firebase", etc. )
+		 * @param string $implementingClassWithFullNamespace - e.g: "\vendor\namespace\MySQLDriver"
 		 * @return void
-		 * @throws \browserfs\Exception on invalid arguments.
+		 * @throws \browserfs\Exception - on invalid arguments.
 		 */
 		public static function registerDriver( $databaseSchemeName, $implementingClassWithFullNamespace ) {
 
@@ -213,7 +228,7 @@
 
 		/**
 		 * Returns TRUE if a specific driver implementation is supported.
-		 * @param $databaseSchemeName: string ( e.g.: "mysql", "mongo", "firebase", etc. )
+		 * @param string $databaseSchemeName - the name of the driver implementation ( e.g.: "mysql", "mongo", "firebase", etc. )
 		 * @return boolean - true if specific implementation is supported
 		 */
 		public static function supportsDriverType( $databaseSchemeName ) {

@@ -215,11 +215,29 @@
 				->run()
 				->each( function( $row ) {
 					echo json_encode( $row ), "\n";
+
 				});
+
+			echo "\n\nshould be able to insert:\n";
+			
+			echo $db
+				->primary
+				->test
+				->insert([
+					'name' => 'Test insert field'
+				])
+				->run()
+				->count(), " rows inserted!\n";
+
+
 
 			echo "\n\n===\n\nexecuted queries: ", json_encode( $queries, JSON_PRETTY_PRINT );
 
-			$this->assertEquals( 8 , count( $queries ) );
+			$this->assertEquals( 9 , count( $queries ) );
+
+		}
+
+		public function testDatabaseInsertService() {
 
 		}
 

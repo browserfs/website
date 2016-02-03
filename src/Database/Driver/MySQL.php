@@ -120,15 +120,23 @@
 
 		}
 
-		public function isIdentifier( $identifierName ) {
+		public function isIdentifier( $identifierName, $maxSegments = -1 ) {
 
 			if ( !is_string( $identifierName ) || $identifierName == '' ) {
 				return false;
 			}
 
+			$maxSegments = (int)$maxSegments;
+
 			$segments = explode( '.', $identifierName );
 
-			if ( count( $segments ) > 3 ) {
+			$numSegments = count( $segments );
+
+			if ( $numSegments > 3 ) {
+				return false;
+			}
+
+			if ( ($maxSegments > -1) && ($numSegments > $maxSegments) ) {
 				return false;
 			}
 
