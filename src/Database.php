@@ -48,22 +48,39 @@
 	 *
 	 */
 
-	abstract class Database extends \browserfs\EventEmitter {
+	abstract class Database extends \browserfs\EventEmitter
+	{
 
 		protected $host     = null;
 		protected $port     = null;
 		protected $user     = null;
 		protected $password = null;
 
-		// database name
+		/**
+		 * Database name
+		 * @var string
+		 */
 		protected $database = null;
 
-		// extra database initialization arguments.
-		protected $initArgs = null;
-		
-		// dsn stands for Data Source Name.
-		protected $dsn      = null;
+		/**
+		 * extra database initialization arguments.
+		 * @var string[]
+		 */
+		protected $initArgs = [];
 
+		/**
+		 * DSN stands for Data Source Name. A unique identifier of type string
+		 * for allowing us to identify this database connection.
+		 * @var string
+		 */
+		protected $dsn = null;
+
+		/**
+		 * A list with registered database driver names ( uri scheme ) which
+		 * points to the fully qualified namespaces implementing drivers for
+		 * those driver implementation classes.
+		 * @var [ $index: string ]: string
+		 */
 		private static $factories = [];
 
 		/**
@@ -115,14 +132,17 @@
 			}
 
 			if ( isset( $config['query'] ) ) {
-				$this->initArgs = $config['query'];
+			
+				parse_str( $config['query'], $this->initArgs );
+
+				//$this->initArgs = $config['query'];
+			
 			}
 
 		}
 
 		/**
 		 * Returns a Database driver specific table implementation.
-		 *
 		 * @param  string $from
 		 * @return \browserfs\Database\Table
 		 */
@@ -219,7 +239,7 @@
 			}
 
 			if ( isset( self::$factories[ $databaseSchemeName ] ) ) {
-				throw new \browserfs\Exception('A driver imlpementing "' . $databaseSchemeName . '" is allready registered!' );
+				throw new \browserfs\Exception('A driver imlpementing "' . $databaseSchemeName . '" database is allready registered!' );
 			}
 
 			self::$factories[ $databaseSchemeName ] = $implementingClassWithFullNamespace;

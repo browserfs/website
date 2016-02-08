@@ -129,4 +129,10 @@
 			return is_string( $str ) && preg_match( '/^[a-zA-Z0-9_]([a-zA-Z0-9_]+)((\\.[a-zA-Z0-9_]([a-zA-Z0-9_]+))+)?$/', $str );
 		}
 
+		/**
+		 * Returns the list with the primary keys of this table.
+		 * @return [ key: number ] => [ "column": string, "autoIncrement": boolean ]
+		 */
+		abstract public function getPrimaryKeyFields();
+
 	}

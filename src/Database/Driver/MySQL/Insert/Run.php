@@ -7,9 +7,11 @@
 		public function __construct( $insertStatement ) {
 
 			parent::__construct( $insertStatement );
+		
 		}
 
 		public function exec() {
+			
 			throw new \browserfs\Exception('Implement ' . self::class . '::run()' );
 
 			return new \browserfs\Collection([]);

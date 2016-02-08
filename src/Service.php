@@ -310,3 +310,4 @@ Service::registerService( 'staging',  'staging',     '\\' . __NAMESPACE__ . '\\S
 Service::registerService( 'staging',  'production',  '\\' . __NAMESPACE__ . '\\Service\\Staging\\Production' );
 Service::registerService( 'website',  'default',     '\\' . __NAMESPACE__ . '\\Service\\Website' );
 Service::registerService( 'database', 'default',     '\\' . __NAMESPACE__ . '\\Service\\Database' );
+Service::registerService( 'cache',    'default',     '\\' . __NAMESPACE__ . '\\Service\\Cache' );
