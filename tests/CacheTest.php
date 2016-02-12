@@ -64,4 +64,32 @@
 			$this->assertEquals( null, $cache->default->get('foo') );
 		}
 
+		public function testCacheNamespaceSet() {
+
+			$cache = $this->config->getService('cache')->default;
+
+			$cacheNamespace = $cache->createNamespace( 'Namespace' );
+
+			$cacheNamespace->set( 'foo', 'bar', 1 );
+
+			$this->assertEquals( 'bar', $cacheNamespace->get('foo') );
+
+			$this->assertEquals( 'bar', $this->config->getService('cache')->default->get( 'Namespacefoo' ) );
+
+		}
+
+		public function testCacheNamespaceDelete() {
+
+			$cache = $this->config->getService('cache')->default;
+
+			$cacheNamespace = $cache->createNamespace( 'Namespace' );
+
+			$cacheNamespace->set('foo','bar',1);
+			$cacheNamespace->delete('foo');
+
+			$this->assertEquals( null, $cacheNamespace->get('foo') );
+			$this->assertEquals( null, $cache->get('Namespacefoo') );
+
+		}
+
 	}

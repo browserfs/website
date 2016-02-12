@@ -2,7 +2,13 @@
 
 	namespace browserfs\website;
 
-	class Service {
+	abstract class Service implements \browserfs\website\IServiceInterface {
+
+		/**
+		 * Returns the Dependency Injector which instantiated this service.
+		 * @var \browserfs\website\Config
+		 */
+		private $DIinstantiator = null;
 
 		// A list with built in factories for services. A developer can register classes for
 		// services here, via the static method registerService();
@@ -280,6 +286,10 @@
 				throw new \browserfs\Exception( 'Invalid argument $fullServiceNamespacedClass: Expected non-empty string' );
 			}
 
+			if ( !( in_array( 'browserfs\website\IServiceInterface', class_implements( $fullServiceNamespacedClass ) ) ) ) {
+				throw new \browserfs\Exception( 'Failed to register service "' . $serviceName . '": The class implementing this service (' . $fullServiceNamespacedClass . ') does not implement the \browserfs\website\IServiceInterface!' );
+			}
+
 			if ( isset( self::$factories[ $serviceName ] ) ) {
 
 				if ( isset( self::$factories[ $serviceName ][ $serviceType ] ) ) {
@@ -300,6 +310,21 @@
 			
 			}
 
+		}
+
+		/**
+		 * Sets the dependency injector which is instantiating this service
+		 */
+		public function setDIInjector( \browserfs\website\Config $instantiator ) {
+			$this->instantiator = $instantiator;
+		}
+
+		/**
+		 * Returns the dependency injector which instantiated this service.
+		 * @return \browserfs\website\Config
+		 */
+		public function getDIInjector() {
+			return $this->instantiator;
 		}
 
 	}

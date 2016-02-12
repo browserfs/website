@@ -37,4 +37,8 @@
 			$this->cache->delete( $this->namespace . $key );
 		}
 
+		public function clear() {
+			throw new \browserfs\Exception('A namespace cache cannot be cleared. Clear the master cache instead!');
+		}
+
 	}

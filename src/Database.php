@@ -48,13 +48,15 @@
 	 *
 	 */
 
-	abstract class Database extends \browserfs\EventEmitter
+	abstract class Database extends \browserfs\EventEmitter implements \browserfs\website\IServiceInterface
 	{
 
-		protected $host     = null;
-		protected $port     = null;
-		protected $user     = null;
-		protected $password = null;
+		private   $DIContainer = null;
+
+		protected $host        = null;
+		protected $port        = null;
+		protected $user        = null;
+		protected $password    = null;
 
 		/**
 		 * Database name
@@ -63,7 +65,10 @@
 		protected $database = null;
 
 		/**
-		 * extra database initialization arguments.
+		 * extra database initialization arguments. These arguments are
+		 * passed as query string to the ini section of the databse dsn.
+		 * e.g. in ini file: 
+		 *   default = mysql://localhost?[foo=bar&car=moo] // the segment between [...] this is the init args
 		 * @var string[]
 		 */
 		protected $initArgs = [];
@@ -82,6 +87,12 @@
 		 * @var [ $index: string ]: string
 		 */
 		private static $factories = [];
+
+		/**
+		 * Returns the cache service this database is using. The cache service is
+		 * instantiated by the \browserfs\website\IServiceInterface interface.
+		 */
+		private static $cache = null;
 
 		/**
 		 * Creates a new database. Drivers should extend this class.
@@ -271,6 +282,47 @@
 		 * @return boolean
 		 */
 		abstract public function connect();
+
+		/**
+		 * interface \browserfs\website\IServiceInterface.setDIInjector implementation
+		 */
+		public function setDIInjector( \browserfs\website\Config $injector ) {
+			$this->DIContainer = $injector;
+		}
+
+		/**
+		 * interface \browserfs\website\IServiceInterface.getDIInjector implementation
+		 */
+		public function getDIInjector() {
+			return $this->DIContainer;
+		}
+
+		/**
+		 * Returns the default caching service of the database.
+		 * The default caching service of the database is storing database
+		 * schema, etc.
+		 *
+		 * @return \browserfs\website\Cache
+		 */
+		public function getCache() {
+			if ( $this->cache === null ) {
+
+				if ( array_key_exists('cacheSourceName', $this->initArgs ) ) {
+					$cacheSourceName = $this->initArgs['cacheSourceName'];
+					$this->cache = $this->getDIInjector()->getService('cache')->{$cacheSourceName}->getNamespace('db_schama_' . $this->dsn . '_schema' );
+				} else {
+					try {
+						$this->cache = $this->getDIInjector()->getService('cache')->getNamespace('db_schema_' . $this->dsn . '_schema' );
+					} catch ( \browserfs\Exception $e ) {
+						$this->cache = new \browserfs\website\Cache\Driver\Memory(null, 'memory');
+					}
+					
+				}
+			}
+
+			return $this->cache;
+
+		}
 
 	}
 

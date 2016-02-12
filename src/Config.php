@@ -4,8 +4,9 @@
 
 	class Config {
 
-		protected $ini       = null;
 		protected $services  = [];
+
+		protected $ini       = null;
 		protected $staging   = 'development';
 		protected $namespace = null;
 
@@ -70,7 +71,11 @@
 					$serviceProperties[ $sectionPropertyName ] = $this->ini->getPropertyMulti( $sectionName, $sectionPropertyName );
 				}
 
-				$this->services[ $serviceName ] = \browserfs\website\Service::factory( $serviceName, $this->ini->getProperty( 'main', $serviceName, '' ), $this->namespace, $serviceProperties );
+				$service = \browserfs\website\Service::factory( $serviceName, $this->ini->getProperty( 'main', $serviceName, '' ), $this->namespace, $serviceProperties );
+
+				$service->setDIInjector( $this );
+
+				$this->services[ $serviceName ] = $service;
 			}
 
 		}

@@ -199,4 +199,10 @@
 
 		}
 
+		public function testDatabaseCacheDependency() {
+
+			$cache = $this->config->getService('database')->primary->getCache();
+
+		}
+
 	}

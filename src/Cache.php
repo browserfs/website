@@ -81,7 +81,7 @@
 		 * @return \browserfs\website\Cache
 		 */
 		public function createNamespace( $nsName ) {
-			if ( !is_string( $namespace ) || !$nsName === '' ) {
+			if ( !is_string( $nsName ) || !$nsName === '' ) {
 				throw new \browserfs\Exception('Invalid argument $nsName: Expected non-empty string' );
 			}
 
