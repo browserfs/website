@@ -29,7 +29,7 @@
 
 			sleep(2);
 
-			$this->as\sertEquals( null, $cache->default->get('foo') );
+			$this->assertEquals( null, $cache->default->get('foo') );
 
 		}
 
