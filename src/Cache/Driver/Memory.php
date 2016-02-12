@@ -62,10 +62,10 @@
 			}
 
 			$this->store[ $key ] = [
-				'time' => time(),
-				'value' => $value,
-				'ttl' => $timeToLive
+				'expire' => time() + $timeToLive,
+				'value' => $value
 			];
+
 		}
 
 		/**
@@ -105,11 +105,7 @@
 
 			if ( isset( $this->store[ $key ] ) ) {
 
-				if ( $this->store[ $key ]['ttl'] <= 0 ) {
-					return false;
-				}
-				
-				return ( time() - $this->store[ $key ][ 'time' ] ) >= 0;
+				return time() - $this->store[ $key ]['expire'] >= 0;
 			
 			} else {
 
