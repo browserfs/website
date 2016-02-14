@@ -8,7 +8,7 @@
 		 * Returns the Dependency Injector which instantiated this service.
 		 * @var \browserfs\website\Config
 		 */
-		private $DIinstantiator = null;
+		private $instantiator = null;
 
 		// A list with built in factories for services. A developer can register classes for
 		// services here, via the static method registerService();

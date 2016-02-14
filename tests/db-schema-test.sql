@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.47, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.10, for Win32 (AMD64)
 --
 -- Host: localhost    Database: test
 -- ------------------------------------------------------
--- Server version	5.5.47-0ubuntu0.14.04.1
+-- Server version	5.7.10-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,6 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `multi_keys`
+--
+
+DROP TABLE IF EXISTS `multi_keys`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `multi_keys` (
+  `key1` int(11) NOT NULL,
+  `key2` int(11) NOT NULL,
+  PRIMARY KEY (`key1`,`key2`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `multi_keys`
+--
+
+LOCK TABLES `multi_keys` WRITE;
+/*!40000 ALTER TABLE `multi_keys` DISABLE KEYS */;
+/*!40000 ALTER TABLE `multi_keys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `test`
 --
 
@@ -26,7 +49,7 @@ CREATE TABLE `test` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -35,7 +58,7 @@ CREATE TABLE `test` (
 
 LOCK TABLES `test` WRITE;
 /*!40000 ALTER TABLE `test` DISABLE KEYS */;
-INSERT INTO `test` VALUES (1,'Jack'),(2,'Anabelle'),(3,'Alicia'),(4,'Betty'),(5,'Zorba'),(6,'Katie'),(7,'Carusso'),(8,'Yen'),(9,'Bill'),(10,'Steve'),(11,'Kevin'),(12,'Louie'),(13,'Mitchell');
+INSERT INTO `test` VALUES (1,'Jack'),(2,'Anabelle'),(3,'Alicia'),(4,'Betty'),(5,'Zorba'),(6,'Katie'),(7,'Carusso'),(8,'Yen'),(9,'Bill'),(10,'Steve'),(11,'Kevin'),(12,'Louie'),(13,'Mitchell'),(14,'Jack'),(15,'Jack');
 /*!40000 ALTER TABLE `test` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -48,4 +71,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-28 21:58:41
+-- Dump completed on 2016-02-14 11:05:38

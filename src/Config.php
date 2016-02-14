@@ -71,9 +71,14 @@
 					$serviceProperties[ $sectionPropertyName ] = $this->ini->getPropertyMulti( $sectionName, $sectionPropertyName );
 				}
 
-				$service = \browserfs\website\Service::factory( $serviceName, $this->ini->getProperty( 'main', $serviceName, '' ), $this->namespace, $serviceProperties );
+				$service = \browserfs\website\Service::factory( 
+					$serviceName, 
+					$this->ini->getProperty( 'main', $serviceName, '' ), 
+					$this->namespace, 
+					$serviceProperties 
+				);
 
-				$service->setDIInjector( $this );
+				$service->setDIInjector($this);
 
 				$this->services[ $serviceName ] = $service;
 			}
@@ -105,7 +110,9 @@
 				throw new \browserfs\Exception('Service "' . $serviceName . '" is not loaded!' );
 			}
 
-			return $this->services[ $serviceName ];
+			$result = $this->services[ $serviceName ];
+
+			return $result;
 
 		}
 

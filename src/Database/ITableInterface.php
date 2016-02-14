@@ -16,4 +16,6 @@
 
 		public function db();
 
+		public function schema();
+
 	}

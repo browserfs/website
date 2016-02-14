@@ -57,7 +57,10 @@
 		public function run()
 		{
 
-			$stmt = new \browserfs\website\Database\Driver\MySQL\Insert\Run( $this );
+			$stmt = new \browserfs\website\Database\Driver\MySQL\Insert\Run( 
+				$this->table, 
+				$this 
+			);
 
 			return $stmt->exec();
 

@@ -27,7 +27,7 @@
 		 * @param \browserfs\website\Database $db - the database in which this table is located.
 		 * @param string $tableName - the name of the table
 		 */
-		public function __construct( \browserfs\website\Database $db, $tableName ) {
+		public function __construct( \browserfs\website\Database &$db, $tableName ) {
 
 			if ( !( $db instanceof \browserfs\website\Database ) ) {
 				throw new \browserfs\Exception('Invalid argument $db: Expected a \\browserfs\\website\\Database instance' );
@@ -130,9 +130,38 @@
 		}
 
 		/**
-		 * Returns the list with the primary keys of this table.
-		 * @return [ key: number ] => [ "column": string, "autoIncrement": boolean ]
+		 * Returns the table schema.
+		 * @return [ index: string ]: [ "name": string, "type": string, "autoIncrement": boolean, "primary": boolean, "allowNull": boolean ]
 		 */
-		abstract public function getPrimaryKeyFields();
+		abstract public function schema();
+
+		/**
+		 * Returns the primary key field names which don't have an auto_increment setting.
+		 * @return string[]
+		 */
+		public function getMandatoryPrimaryKeyNames() {
+			$schema = $this->schema();
+			$result = [];
+			foreach ( $schema as $field ) {
+				if ( $field['primary'] && !$field['autoIncrement'] ) {
+					$result[] = $field['name'];
+				}
+			}
+			return $result;
+		}
+
+		/**
+		 * Returns the name of the autoIncrement key
+		 * @return string | null
+		 */
+		public function getAutoIncrementKeyName() {
+			$schema = $this->schema();
+			foreach ( $schema as $field ) {
+				if ( $field['autoIncrement'] ) {
+					return $field['name'];
+				}
+			}
+			return null;
+		}
 
 	}

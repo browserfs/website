@@ -62,7 +62,11 @@
 
 				if ( isset( $this->databases[ $databaseSourceName ] ) ) {
 
-					return $this->databases[ $databaseSourceName ];
+					$result = $this->databases[ $databaseSourceName ];
+
+					$result->setDIInjector( $this->getDIInjector() );
+
+					return $result;
 				
 				} else {
 

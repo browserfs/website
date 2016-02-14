@@ -51,7 +51,7 @@
 	abstract class Database extends \browserfs\EventEmitter implements \browserfs\website\IServiceInterface
 	{
 
-		private   $DIContainer = null;
+		private   $instantiator = null;
 
 		protected $host        = null;
 		protected $port        = null;
@@ -92,7 +92,7 @@
 		 * Returns the cache service this database is using. The cache service is
 		 * instantiated by the \browserfs\website\IServiceInterface interface.
 		 */
-		private static $cache = null;
+		private $cache = null;
 
 		/**
 		 * Creates a new database. Drivers should extend this class.
@@ -287,14 +287,24 @@
 		 * interface \browserfs\website\IServiceInterface.setDIInjector implementation
 		 */
 		public function setDIInjector( \browserfs\website\Config $injector ) {
-			$this->DIContainer = $injector;
+			
+			if ( !( $injector instanceof \browserfs\website\Config ) ) {
+				throw new \browserfs\Exception('The injector must be a \browserfs\website\Config' );
+			}
+			
+			$this->instantiator = $injector;
 		}
 
 		/**
 		 * interface \browserfs\website\IServiceInterface.getDIInjector implementation
 		 */
 		public function getDIInjector() {
-			return $this->DIContainer;
+			
+			if ( $this->instantiator === null ) {
+				throw new \browserfs\Exception('getDIInjector must be called after setDIInjector!');
+			}
+			
+			return $this->instantiator;
 		}
 
 		/**
@@ -305,14 +315,15 @@
 		 * @return \browserfs\website\Cache
 		 */
 		public function getCache() {
+
 			if ( $this->cache === null ) {
 
 				if ( array_key_exists('cacheSourceName', $this->initArgs ) ) {
 					$cacheSourceName = $this->initArgs['cacheSourceName'];
-					$this->cache = $this->getDIInjector()->getService('cache')->{$cacheSourceName}->getNamespace('db_schama_' . $this->dsn . '_schema' );
+					$this->cache = $this->getDIInjector()->getService('cache')->{$cacheSourceName}->createNamespace('db_schema_' . $this->dsn );
 				} else {
 					try {
-						$this->cache = $this->getDIInjector()->getService('cache')->getNamespace('db_schema_' . $this->dsn . '_schema' );
+						$this->cache = $this->getDIInjector()->getService('cache')->default->createNamespace('db_schema_' . $this->dsn );
 					} catch ( \browserfs\Exception $e ) {
 						$this->cache = new \browserfs\website\Cache\Driver\Memory(null, 'memory');
 					}

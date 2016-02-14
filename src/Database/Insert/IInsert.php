@@ -37,7 +37,8 @@
 		 * Returns a traversible collections, containing the resulting rows
 		 * for this select statement. The primary keys are fetched from the server
 		 * on the objects of the collection, and merged into the original inserted object.
-		 * @return \browserfs\base\Collection
+		 * @return [ index: string ] => any The inserted object. The auto increment key is
+		 *     merged into the inserted object if missing.
 		 */
 		public function run();
 

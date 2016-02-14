@@ -23,7 +23,9 @@
 			
 			$db = $this->config->getService('database');
 
-			$keys = $db->primary->test->getPrimaryKeyFields();
+			$this->assertEquals( false, empty( $db->getDIInjector() ) );
+
+			$keys = $db->primary->test->schema();
 
 			$this->assertEquals( true, is_array( $keys ) );
 			$this->assertEquals( true, count( $keys ) > 0 );
@@ -56,7 +58,7 @@
 			
 			} );
 
-			echo "\n\nshould return all: \n";
+			// echo "\n\nshould return all: \n";
 
 			$db
 				->primary          // Database source name is accessed via the getter
@@ -64,10 +66,10 @@
 				->select()
 				->run()
 				->each( function( $row ) {
-					echo json_encode( $row ), "\n";
+					//echo json_encode( $row ), "\n";
 				});
 
-			echo "\n\nshould return all excepting first: \n";
+			//echo "\n\nshould return all excepting first: \n";
 
 			$db
 				->primary
@@ -76,10 +78,10 @@
 				->skip(1)
 				->run()
 				->each( function( $row ) {
-					echo json_encode( $row ), "\n";
+					//echo json_encode( $row ), "\n";
 				});
 
-			echo "\n\nshould return first ( manually specifying fields ): \n";
+			//echo "\n\nshould return first ( manually specifying fields ): \n";
 
 			$db
 				->primary
@@ -88,10 +90,10 @@
 				->limit(1)
 				->run()
 				->each( function( $row ) {
-					echo json_encode( $row ), "\n";
+					//echo json_encode( $row ), "\n";
 				});
 
-			echo "\n\nshould return the second person: \n";
+			//echo "\n\nshould return the second person: \n";
 
 			$db
 				->primary
@@ -101,10 +103,10 @@
 				->limit(1)
 				->run()
 				->each( function( $row ) {
-					echo json_encode( $row ), "\n";
+					//echo json_encode( $row ), "\n";
 				});
 
-			echo "\n\nshould return names > 'clarissa': \n";
+			//echo "\n\nshould return names > 'clarissa': \n";
 
 			$db
 				->primary
@@ -123,10 +125,10 @@
 				])
 				->run()
 				->each( function( $row ) {
-					echo json_encode( $row ), "\n";
+					//echo json_encode( $row ), "\n";
 				});
 
-			echo "\n\nshould return id > 4:\n";
+			//echo "\n\nshould return id > 4:\n";
 
 			$db
 				->primary
@@ -141,10 +143,10 @@
 				->skip(1)
 				->run()
 				->each( function( $row ) {
-					echo json_encode( $row ), "\n";
+					//echo json_encode( $row ), "\n";
 				});
 
-			echo "\n\nshould return only bill or jack: \n";
+			//echo "\n\nshould return only bill or jack: \n";
 
 			$db
 				->primary
@@ -163,10 +165,10 @@
 				->limit(1)
 				->run()
 				->each( function( $row ) {
-					echo json_encode( $row ), "\n";
+					//echo json_encode( $row ), "\n";
 				});
 
-			echo "\n\nshould not return id: \n";
+			//echo "\n\nshould not return id: \n";
 
 			$db
 				->primary
@@ -187,11 +189,11 @@
 				->limit(1)
 				->run()
 				->each( function( $row ) {
-					echo json_encode( $row ), "\n";
+					//echo json_encode( $row ), "\n";
 
 				});
 
-			echo "\n\n===\n\nexecuted queries: ", json_encode( $queries, JSON_PRETTY_PRINT );
+			//echo "\n\n===\n\nexecuted queries: ", json_encode( $queries, JSON_PRETTY_PRINT );
 
 			$this->assertEquals( 8 , count( $queries ) );
 
@@ -199,9 +201,47 @@
 
 		}
 
+		public function testInsert() {
+
+			$db = $this->config->getService('database');
+
+			$queries = [];
+
+			try {
+				$db->primary->connect();
+			} catch ( \Exception $e ) {
+				echo "\n\nDATABASE SERVICE SKIPPED: The testing environment does not provide required database support\n\n" . $e->getMessage();
+				$this->markTestSkipped( 'The testing environment does not provide require database support' );
+				return;
+			}
+
+			$db->primary->on( 'query', function( \browserfs\Event $e ) use ( &$queries ) {
+				
+				$tableName = $e->getArg(0);
+				$query = $e->getArg(1);
+				
+				$queries[] = [
+					'table' => $tableName,
+					'query' => $query
+				];
+			
+			} );
+
+			/** BEGIN TEST **/
+
+			$record = $db->primary->test->insert([])->run();
+
+			echo json_encode( $record, JSON_PRETTY_PRINT );
+
+			$db->primary->off( 'query' );
+
+			print_r( $queries );
+
+		}
+
 		public function testDatabaseCacheDependency() {
 
-			$cache = $this->config->getService('database')->primary->getCache();
+			$this->assertEquals( true, $this->config->getService('database')->primary->getCache() instanceof \browserfs\website\Cache );
 
 		}
 

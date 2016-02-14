@@ -31,28 +31,41 @@
 			return new Insert( $fields, $this );
 		}
 
-		public function getPrimaryKeyFields()
+		/**
+		 * Returns the table schema.
+		 * @return [ index: string ]: [ "name": string, "type": string, "autoIncrement": boolean, "primary": boolean, "allowNull": boolean ]
+		 */
+		public function schema()
 		{
 
-			// TODO!: RETRIEVE THE PRIMARY KEYS FROM CACHE
+			$cache = $this->db()->getCache();
+
+			$cachedSchema = $cache->get('_table_' . $this->name() );
+
+			if ( $cachedSchema !== null && is_string( $cachedSchema ) ) {
+				return json_decode( $cachedSchema, TRUE );
+			}
 
 			$this->db()->connect();
 
 			$result = $this->db()->getNativeDriver()->query( 
 				$sql = "SHOW columns FROM " 
-					. $this->db()->escapeIdentifier( $this->name ) 
-					. " WHERE `Key` = 'PRI'"
+					. $this->db()->escapeIdentifier( $this->name )
 			);
 			
 			$fields = [];
 
 			foreach ( $result as $row ) {
+
 				$fields[] = [
 					'name' => $row['Field'],
 					'autoIncrement' => strtolower( $row['Extra'] ) == 'auto_increment',
-					'default' => $row['Default']
+					'default' => $row['Default'] === 'NULL' ? null : $row['Default'],
+					'primary' => strtolower( $row['Key'] ) == 'pri'
 				];
 			}
+
+			$cache->set( '_table_' . $this->name, json_encode( $fields ), -1 );
 
 			return $fields;
 		}
