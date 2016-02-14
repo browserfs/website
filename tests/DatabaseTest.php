@@ -23,7 +23,9 @@
 			
 			$db = $this->config->getService('database');
 
-			$this->assertEquals( false, empty( $db->getDIInjector() ) );
+			$injector = $db->getDIInjector();
+
+			$this->assertEquals( false, empty( $injector ) );
 
 			$keys = $db->primary->test->schema();
 
