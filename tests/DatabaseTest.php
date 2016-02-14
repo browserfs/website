@@ -16,7 +16,6 @@
 
 				'\\browserfs\\website'
 			);
-
 		}
 
 		public function testIfTablePrimaryKeysIsWorking() {
@@ -233,11 +232,11 @@
 
 			$record = $db->primary->test->insert([])->run();
 
-			echo json_encode( $record, JSON_PRETTY_PRINT );
+			//echo json_encode( $record, JSON_PRETTY_PRINT );
 
 			$db->primary->off( 'query' );
 
-			print_r( $queries );
+			//print_r( $queries );
 
 		}
 

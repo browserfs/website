@@ -48,7 +48,7 @@
 	 *
 	 */
 
-	abstract class Database extends \browserfs\EventEmitter implements \browserfs\website\IServiceInterface
+	abstract class Database extends \browserfs\EventEmitter implements \browserfs\website\Service\IServiceInterface
 	{
 
 		private   $instantiator = null;

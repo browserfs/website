@@ -1,6 +1,6 @@
 <?php
 
-	namespace browserfs\website;
+	namespace browserfs\website\Service;
 
 	interface IServiceInterface {
 	

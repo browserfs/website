@@ -2,7 +2,7 @@
 
 	namespace browserfs\website;
 
-	abstract class Service implements \browserfs\website\IServiceInterface {
+	abstract class Service implements \browserfs\website\Service\IServiceInterface {
 
 		/**
 		 * Returns the Dependency Injector which instantiated this service.
@@ -286,8 +286,8 @@
 				throw new \browserfs\Exception( 'Invalid argument $fullServiceNamespacedClass: Expected non-empty string' );
 			}
 
-			if ( !( in_array( 'browserfs\website\IServiceInterface', class_implements( $fullServiceNamespacedClass ) ) ) ) {
-				throw new \browserfs\Exception( 'Failed to register service "' . $serviceName . '": The class implementing this service (' . $fullServiceNamespacedClass . ') does not implement the \browserfs\website\IServiceInterface!' );
+			if ( !( in_array( 'browserfs\website\Service\IServiceInterface', class_implements( $fullServiceNamespacedClass ) ) ) ) {
+				throw new \browserfs\Exception( 'Failed to register service "' . $serviceName . '": The class implementing this service (' . $fullServiceNamespacedClass . ') does not implement the \browserfs\website\Service\IServiceInterface!' );
 			}
 
 			if ( isset( self::$factories[ $serviceName ] ) ) {
