@@ -16,6 +16,9 @@
 
 				'\\browserfs\\website'
 			);
+
+			// POPULATE DATABASE WITH A DUMP...
+			$this->config->getService('database')->primary->execDumpFile( __DIR__ . '/db-schema-test.sql' );
 		}
 
 		public function testIfTablePrimaryKeysIsWorking() {
@@ -243,6 +246,48 @@
 		public function testDatabaseCacheDependency() {
 
 			$this->assertEquals( true, $this->config->getService('database')->primary->getCache() instanceof \browserfs\website\Cache );
+
+		}
+
+		public function testDeleteStatement() {
+
+			$db = $this->config->getService('database');
+
+
+			try {
+				$db->primary->connect();
+			} catch ( \Exception $e ) {
+				echo "\n\nDATABASE SERVICE SKIPPED: The testing environment does not provide required database support\n\n" . $e->getMessage();
+				$this->markTestSkipped( 'The testing environment does not provide require database support' );
+				return;
+			}
+
+			$deletedRecords = $db->primary->test->delete([
+				'id' => [
+					'$gte' => 2,
+					'$lte' => 2
+				]
+			])->run();
+			
+			$this->assertEquals( 1, $deletedRecords );
+
+			$deleteRecords = $db->primary->test->delete([
+				'id' => [
+					'$gte' => 1,
+					'$lte' => 1
+				]
+			])->limit(1)->run();
+
+			$this->assertEquals( 1, $deletedRecords );
+
+			$deleteRecords = $db->primary->test->delete([
+				'id' => [
+					'$gte' => 3,
+					'$lte' => 3
+				]
+			])->limit(1)->run();
+
+			$this->assertEquals( 1, $deletedRecords );
 
 		}
 

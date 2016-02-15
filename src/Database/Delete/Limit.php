@@ -2,19 +2,17 @@
 	
 	namespace browserfs\website\Database\Delete;
 
-	class Limit implements \browserfs\website\Database\IDelete {
+	abstract class Limit implements \browserfs\website\Database\Delete\IDelete {
 
 		protected $table = null;
 		protected $where = null;
-		protected $skip  = null;
 
 		protected $value = null;
 
 		public function __construct( 
 			$count,
 			\browserfs\website\Database\Table $table,
-			\browserfs\website\Database\Delete $where,
-			\browserfs\website\Database\Skip $skip = null
+			\browserfs\website\Database\Delete $where
 		) {
 
 			if ( !is_int( $count) || $count < 1 ) {
@@ -24,24 +22,16 @@
 			$this->value = $count;
 
 			if ( !( $table instanceof \browserfs\website\Database\Table ) ) {
-				throw new \browserfs\Exception('Invalid argument: $table: Expected a \browserfs\website\Database\Table')
+				throw new \browserfs\Exception('Invalid argument: $table: Expected a \browserfs\website\Database\Table');
 			}
 
 			$this->table = $table;
 
 			if ( !( $where instanceof \browserfs\website\Database\Delete ) ) {
-				throw new \browserfs\Exception('Invalid argument: $where: Expected a \browserfs\website\Database\Delete')
+				throw new \browserfs\Exception('Invalid argument: $where: Expected a \browserfs\website\Database\Delete');
 			}
 
 			$this->where = $where;
-
-			if ( null !== $skip ) {
-				if ( !( $skip instanceof \browserfs\website\Database\Delete\Skip ) ) {
-					throw new \browserfs\Exception('Invalid argument: $skip: Expected a \browserfs\website\Database\Delete\Skip');
-				}
-			}
-
-			$this->skip = $skip;
 
 		}
 

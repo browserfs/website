@@ -335,6 +335,8 @@
 
 		}
 
+		abstract public function execDumpFile( $filePath );
+
 	}
 
 \browserfs\website\Database::registerDriver( 'mysql', '\\' . __NAMESPACE__ . '\\Database\Driver\MySQL' );

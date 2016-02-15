@@ -10,8 +10,6 @@
 
 		public function getLimit();
 
-		public function getSkip();
-
 		public function value();
 
 		public function run();

@@ -1,6 +1,6 @@
 <?php
 
-	namspace browserfs\website\Database;
+	namespace browserfs\website\Database;
 
 	abstract class Delete implements Delete\IDelete {
 
@@ -13,6 +13,7 @@
 		 * The table on which the delete statement is executed
 		 * @var \browserfs\website\Database\Table
 		 */
+		protected $table = null;
 
 		/**
 		 * Constructor. Creates a new DELETE statement
@@ -30,6 +31,8 @@
 				throw new \browserfs\Exception( 'Invalid argument: $table must be a instance of \browserfs\website\Database\Table' );
 			}
 
+			$this->table = $table;
+
 		}
 
 		/**
@@ -45,14 +48,6 @@
 		 */
 		public function getWhere() {
 			return $this;
-		}
-
-		/**
-		 * Returns the skip clause of this DELETE statement
-		 * @return \browserfs\website\Database\Delete\Skip | null
-		 */
-		public function getSkip() {
-			return null;
 		}
 
 		/**
@@ -78,5 +73,6 @@
 		 * @return int
 		 */
 		abstract public function run();
+
 
 	}

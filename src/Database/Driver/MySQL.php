@@ -233,4 +233,57 @@
 
 		}
 
+		/**
+		 * On MYSQL driver, there are some restrictions on the dump file format:
+		 * - each command should be on a single line
+		 * - a line can be escaped via the # comment command
+		 * - empty lines are skipped.
+		 * This method is implemented for unit testing, not for production usage!!!
+		 */
+		public function execDumpFile( $fileName ) {
+
+			$fullFileName = @realPath( $fileName );
+
+			if ( !$fullFileName ) {
+				throw new \browserfs\Exception('File: ' . $fileName . ' does not exist!' );
+			}
+
+			$buffer = file_get_contents( $fullFileName );
+
+			if ( empty( $buffer ) ) {
+				throw new \browserfs\Exception('File: ' . $fileName . ' could not be read ( or empty )!' );
+			}
+
+			$commands = explode( "\n", $buffer );
+
+			$lineNo = 0;
+
+			$this->connect();
+
+			try {
+
+				foreach ( $commands as $command ) {
+
+					$lineNo++;
+
+					$command = trim( $command );
+
+					if ( $command == '' ) {
+						continue;
+					}
+
+					if ( !preg_match( '/^([\s]+)?#/', $command ) ) {
+						$this->getNativeDriver()->query( $command );
+					}
+
+				}
+
+			} catch ( \Exception $e ) {
+
+				throw new \browserfs\Exception('Error running dump file: ' . $fileName . ' @line: ' . $lineNo, 1, $e );
+
+			}
+
+		}
+
 	}

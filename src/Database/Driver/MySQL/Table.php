@@ -21,9 +21,9 @@
 			return null;
 		}
 
-		public function delete( $fields )
+		public function delete( $filter )
 		{
-			return null;
+			return new Delete( $filter, $this );
 		}
 
 		public function insert( $fields )

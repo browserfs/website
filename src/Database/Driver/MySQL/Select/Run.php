@@ -46,7 +46,7 @@
 
 				} else {
 
-					$parts[] = 'LIMIT ' . $this->skip->value() . ',1000000000';
+					$parts[] = 'LIMIT ' . $this->skip->value() . ',' . \browserfs\website\Database\Driver\MySQL\SQL::SQL_MAX_LIMIT_ROWS;
 
 				}
 
