@@ -335,6 +335,13 @@
 
 		}
 
+		/**
+		 * Executes any arbitrary SQL statement
+		 * @param   $statement: string
+		 * @return  \browserfs\website\Database\Statement
+		 */
+		abstract public function SQL( $statement );
+
 		abstract public function execDumpFile( $filePath );
 
 	}

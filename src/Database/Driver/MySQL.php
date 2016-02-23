@@ -234,6 +234,17 @@
 		}
 
 		/**
+		 * Executes an arbitrary SQL statement, and returns it's value.
+		 * Returns a Database Statement
+		 *
+		 *   @return \browserfs\website\Database\Statement
+		 *   @throws \browserfs\Exception - On unsupported statement
+		 */
+		public function SQL( $statement ) {
+			return \browserfs\website\Database\Driver\MySQL\Statement::create( $this, $statement );
+		}
+
+		/**
 		 * On MYSQL driver, there are some restrictions on the dump file format:
 		 * - each command should be on a single line
 		 * - a line can be escaped via the # comment command

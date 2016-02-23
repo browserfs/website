@@ -363,4 +363,29 @@
 
 		}
 
+		public function testDatabaseArbitrarySQLStatements() {
+
+			$db = $this->config->getService('database');
+
+			try {
+
+				$db->primary->connect();
+
+			} catch ( \Exception $e ) {
+				echo "\n\nDATABASE SERVICE SKIPPED: The testing environment does not provide required database support\n\n" . $e->getMessage();
+				$this->markTestSkipped( 'The testing environment does not provide require database support' );
+				return;
+			}
+
+			echo "\n";
+			echo $db->primary->SQL('/* This should be removed */SELECT * FROM foo WHERE TRUE')->toString(), "\n";
+			echo $db->primary->SQL('-- empty query' . "\nINSERT INTO foo ( foo, bar) VALUES (1, 2)")->toString(), "\n";
+			//echo $db->primary->SQL( '--   ' . "\n", "# asdasd \n" . "/*    ASDasd asd */" )->toString(), "\n";
+			echo $db->primary->SQL('UPDATE foo SET foo = 1, bar = 2 WHERE 1 LIMIT 2')->toString(), "\n";
+			echo $db->primary->SQL('DELETE FROM foo WHERE 1')->toString(), "\n";
+
+			$this->assertEquals( true, true );
+
+		}
+
 	}
