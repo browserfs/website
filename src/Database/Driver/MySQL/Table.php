@@ -18,7 +18,7 @@
 
 		public function update( $fields )
 		{
-			return null;
+			return new Update( $fields, $this );
 		}
 
 		public function delete( $filter )

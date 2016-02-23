@@ -16,10 +16,15 @@
 
 		/**
 		 * Constructor. Creates a new insert statement on a table.
+		 * @param $fieldsToInsert: array | null - the fields to be inserted
+		 * @param \browserfs\website\Database\Table $table - the table where this insert operation is made.
 		 */
 		public function __construct( 
+
 			$fieldsToInsert = null, 
+
 			\browserfs\website\Database\Table $table 
+
 		) {
 
 			if ( null !== $fieldsToInsert ) {

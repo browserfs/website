@@ -291,4 +291,76 @@
 
 		}
 
+		public function testUpdateStatementForAllTheTable() {
+
+			$db = $this->config->getService('database');
+
+			try {
+
+				$db->primary->connect();
+
+			} catch ( \Exception $e ) {
+				echo "\n\nDATABASE SERVICE SKIPPED: The testing environment does not provide required database support\n\n" . $e->getMessage();
+				$this->markTestSkipped( 'The testing environment does not provide require database support' );
+				return;
+			}
+
+			$updatedRecords = $db->primary->test->update([
+				"name" => "Update#all"
+			])->run();
+
+			$this->assertEquals( 15, $updatedRecords );
+
+		}
+
+		public function testTheRestOfUpdateStatement() {
+
+			$db = $this->config->getService('database');
+
+			try {
+
+				$db->primary->connect();
+
+			} catch ( \Exception $e ) {
+				echo "\n\nDATABASE SERVICE SKIPPED: The testing environment does not provide required database support\n\n" . $e->getMessage();
+				$this->markTestSkipped( 'The testing environment does not provide require database support' );
+				return;
+			}
+
+			$queries = [];
+
+			$db->primary->on( 'query', function( \browserfs\Event $e ) use ( &$queries ) {
+				
+				$tableName = $e->getArg(0);
+				$query = $e->getArg(1);
+				
+				$queries[] = [
+					'table' => $tableName,
+					'query' => $query
+				];
+
+				//echo $query, "\n";
+			
+			} );
+
+			$updatedRecords = $db->primary->test->update([
+					"name" => "Update#1"
+				])->where([
+					"id" => 1
+				])->run();
+
+			$this->assertEquals( 1, $updatedRecords );
+
+			$updatedRecords = $db->primary->test->update([
+					"name" => "Update#2"
+				])->where([
+					"id" => [
+						'$gt' => 2
+					]
+				])->limit(2)->run();
+
+			$this->assertEquals( 2, $updatedRecords );
+
+		}
+
 	}
